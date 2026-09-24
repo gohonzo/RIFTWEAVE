@@ -1,0 +1,9 @@
+{
+  "name": "RIFTWEAVE: Shards of Aether",
+  "short_name": "RIFTWEAVE",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070914",
+  "theme_color": "#070914",
+  "description": "Tactical match roguelike with animated squad combat."
+}
