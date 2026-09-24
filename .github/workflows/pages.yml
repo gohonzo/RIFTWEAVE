@@ -35,7 +35,31 @@ jobs:
           test -f site/style.css
           test -f site/game.js
           test -d site/assets
+
+          cp bootstrap-fix.js site/bootstrap-fix.js
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("site/index.html")
+          s = p.read_text(encoding="utf-8")
+          marker = '<script src="game.js"></script>'
+          shim = '<script src="bootstrap-fix.js"></script>\n' + marker
+          if 'bootstrap-fix.js' not in s:
+              s = s.replace(marker, shim)
+          p.write_text(s, encoding="utf-8")
+
+          g = Path("site/game.js")
+          js = g.read_text(encoding="utf-8")
+          needle = 'fitStage();updateContinue();makeGrid();makeEnemy();renderBoard();updateUI();'
+          replacement = needle + ' window.RIFTWEAVE_RELEASE_LOADER?.();'
+          if 'RIFTWEAVE_RELEASE_LOADER?.()' not in js:
+              js = js.replace(needle, replacement)
+          g.write_text(js, encoding="utf-8")
+          PY
+
           node --check site/game.js
+          grep -q "bootstrap-fix.js" site/index.html
+          grep -q "RIFTWEAVE_RELEASE_LOADER" site/game.js
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
