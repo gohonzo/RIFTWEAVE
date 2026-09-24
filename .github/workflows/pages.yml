@@ -1,4 +1,4 @@
-name: Deploy RIFTWEAVE Visual Build
+name: Deploy RIFTWEAVE Senior Visual Build
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -24,47 +24,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Rebuild visual game
+      - name: Rebuild production game
         run: |
           mkdir -p site
           cat .bundle/part_*.b64 > site.b64
           base64 -d site.b64 > site.tar.gz
-          echo "c54ee62a5772a84d50855bc52f6a447b1f71d175872680e51e347f55d98ae85f  site.tar.gz" | sha256sum -c -
+          echo "a5650c03fde65213cad35e4ade56c0a543cc0642a96ac1f49867cf7935e252b4  site.tar.gz" | sha256sum -c -
           tar -xzf site.tar.gz -C site
           test -f site/index.html
           test -f site/style.css
           test -f site/game.js
-          test -d site/assets
-
-          cp bootstrap-fix.js site/bootstrap-fix.js
-
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("site/index.html")
-          s = p.read_text(encoding="utf-8")
-          marker = '<script src="game.js"></script>'
-          shim = '<script src="bootstrap-fix.js"></script>\n' + marker
-          if 'bootstrap-fix.js' not in s:
-              s = s.replace(marker, shim)
-          p.write_text(s, encoding="utf-8")
-
-          g = Path("site/game.js")
-          js = g.read_text(encoding="utf-8")
-          needle = 'fitStage();updateContinue();makeGrid();makeEnemy();renderBoard();updateUI();'
-          replacement = needle + ' window.RIFTWEAVE_RELEASE_LOADER?.();'
-          if 'RIFTWEAVE_RELEASE_LOADER?.()' not in js:
-              js = js.replace(needle, replacement)
-          g.write_text(js, encoding="utf-8")
-          PY
-
+          test -f site/assets/kael_idle.webp
+          test -f site/assets/tile_void_plus.webp
           node --check site/game.js
-          grep -q "bootstrap-fix.js" site/index.html
-          grep -q "RIFTWEAVE_RELEASE_LOADER" site/game.js
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload visual build
+      - name: Upload production build
         uses: actions/upload-pages-artifact@v4
         with:
           path: site
