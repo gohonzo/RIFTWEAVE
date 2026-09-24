@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070914">
+  <meta name="description" content="RIFTWEAVE: Shards of Aether — tactical match roguelike.">
+  <title>RIFTWEAVE: Shards of Aether</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div id="app">
+  <header class="hud glass">
+    <div class="brand"><span class="brand-sigil"></span><div><b>RIFTWEAVE</b><small>SHARDS OF AETHER</small></div></div>
+    <div class="run-stats">
+      <span><small>RIFT</small><b id="room">01</b></span>
+      <span><small>ÉTER</small><b id="aether">0</b></span>
+      <span><small>RELIQUIAS</small><b id="relicCount">0</b></span>
+    </div>
+    <button id="pause" class="round" type="button" aria-label="Pausa">Ⅱ</button>
+  </header>
+
+  <main class="shell">
+    <section class="arena glass" aria-label="Combate">
+      <div class="rift-geometry" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="squad">
+        <article class="fighter kael" data-hero="kael">
+          <div class="figure">
+            <svg viewBox="0 0 160 220" role="img" aria-label="Kael Voss">
+              <defs><linearGradient id="kaelArmor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b8f4ff"/><stop offset=".45" stop-color="#628cff"/><stop offset="1" stop-color="#30275f"/></linearGradient></defs>
+              <ellipse class="aura" cx="80" cy="112" rx="58" ry="93"/>
+              <path class="cape" d="M54 83c-27 19-32 68-20 109l41-18 12-75z"/>
+              <circle class="skin" cx="83" cy="55" r="25"/>
+              <path class="hair" d="M58 51c1-30 22-41 46-31 14 6 21 17 20 32-12-10-24-15-36-8-11 6-18 5-30 7z"/>
+              <path class="torso" d="M48 173c3-49 15-80 36-82 26 2 40 35 43 82z"/>
+              <path class="armor" d="M60 101l24 17 25-17 11 70H51z"/>
+              <path class="blade" d="M120 73l10 4-20 102-11-3z"/>
+              <path class="edge" d="M126 72l4 2-22 107-4-1z"/>
+              <circle class="core" cx="84" cy="130" r="10"/>
+            </svg>
+          </div>
+          <div class="fighter-card"><div><b>KAEL</b><small>VANGUARDIA</small></div><div class="bars"><i><em id="kaelHp"></em></i><i><em id="kaelEnergy"></em></i></div></div>
+        </article>
+
+        <article class="fighter lyra" data-hero="lyra">
+          <div class="figure">
+            <svg viewBox="0 0 160 220" role="img" aria-label="Lyra Sol">
+              <defs><linearGradient id="lyraRobe" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd490"/><stop offset=".45" stop-color="#ff6d9d"/><stop offset="1" stop-color="#7c45ee"/></linearGradient></defs>
+              <ellipse class="aura" cx="80" cy="112" rx="58" ry="93"/>
+              <path class="flamehair" d="M50 70c-10-34 8-55 29-45 17-25 48-5 40 22 18 9 18 39-1 51-10-12-23-17-39-14-12 2-22-4-29-14z"/>
+              <circle class="skin" cx="81" cy="61" r="24"/>
+              <path class="torso" d="M43 174c4-50 17-80 38-82 24 2 40 34 43 82z"/>
+              <path class="robe" d="M50 108l31 17 32-17 12 66H38z"/>
+              <circle class="orb o1" cx="130" cy="114" r="12"/>
+              <circle class="orb o2" cx="30" cy="135" r="8"/>
+              <path class="sigilMark" d="M81 117l15 25-15 25-15-25z"/>
+            </svg>
+          </div>
+          <div class="fighter-card"><div><b>LYRA</b><small>TEJEDORA</small></div><div class="bars"><i><em id="lyraHp"></em></i><i><em id="lyraEnergy"></em></i></div></div>
+        </article>
+
+        <article class="fighter nyx" data-hero="nyx">
+          <div class="figure">
+            <svg viewBox="0 0 160 220" role="img" aria-label="Nyx Vale">
+              <defs><linearGradient id="nyxMantle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a2ffd1"/><stop offset=".45" stop-color="#4edacb"/><stop offset="1" stop-color="#526cff"/></linearGradient></defs>
+              <ellipse class="aura" cx="80" cy="112" rx="58" ry="93"/>
+              <path class="hood" d="M47 74c3-46 22-60 38-60 25 0 40 27 39 60l-18 21-51-2z"/>
+              <circle class="skin" cx="82" cy="63" r="23"/>
+              <path class="torso" d="M42 174c5-51 18-79 40-81 24 2 38 32 42 81z"/>
+              <path class="mantle" d="M50 104l31 15 31-15 14 70H36z"/>
+              <path class="staff" d="M129 69l6 2-19 115-7-1z"/>
+              <circle class="staffCore" cx="132" cy="55" r="15"/>
+              <path class="leaf" d="M81 122c16-17 32-4 19 15-8 10-19 18-19 18s-12-8-19-18c-13-18 5-31 19-15z"/>
+            </svg>
+          </div>
+          <div class="fighter-card"><div><b>NYX</b><small>GUARDIANA</small></div><div class="bars"><i><em id="nyxHp"></em></i><i><em id="nyxEnergy"></em></i></div></div>
+        </article>
+      </div>
+
+      <div class="enemy-zone">
+        <div class="intent" id="intent">PREPARANDO ATAQUE</div>
+        <div class="enemy" id="enemy">
+          <div class="enemy-core"><i></i></div><span class="arm a"></span><span class="arm b"></span><span class="arm c"></span><b class="eye"></b>
+        </div>
+        <div class="enemy-card">
+          <div class="enemy-title"><b id="enemyName">DEVORADOR DE UMBRA</b><small id="enemyTier">RIFT BEAST</small></div>
+          <div class="enemy-health"><i id="enemyHp"></i><em id="enemyShield"></em></div>
+          <div class="enemy-meta"><span id="enemyHpText">300 / 300</span><span id="enemyTurn">ATACA EN 3</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="combat-grid">
+      <aside class="side glass">
+        <div class="side-title"><small>SINCRONÍA</small><b id="combo">x1.00</b></div>
+        <div class="meter"><i id="sync"></i></div>
+        <div class="mission"><small>OBJETIVO</small><b id="mission">Rompe al guardián del Rift.</b></div>
+        <div id="relics" class="relics"></div>
+      </aside>
+
+      <section class="board-panel glass">
+        <div class="board-top"><div><small>TEJIDO ACTIVO</small><b id="turn">TURNO 1</b></div><div><small>CADENA</small><b id="chain">—</b></div></div>
+        <div id="board" class="board" role="grid" aria-label="Tablero de sigilos"></div>
+        <p id="tip">Intercambia dos sigilos adyacentes para crear una cadena.</p>
+      </section>
+
+      <aside class="side rules glass">
+        <small>REGLAS DEL RIFT</small>
+        <div><i class="steel"></i><span><b>ACERO</b><em>Kael ataca</em></span></div>
+        <div><i class="ember"></i><span><b>BRASA</b><em>Lyra incendia</em></span></div>
+        <div><i class="tide"></i><span><b>MAREA</b><em>Nyx protege</em></span></div>
+        <div><i class="aether"></i><span><b>ÉTER</b><em>Carga supremas</em></span></div>
+        <div><i class="bloom"></i><span><b>BROTE</b><em>Cura al grupo</em></span></div>
+        <div><i class="void"></i><span><b>VACÍO</b><em>Rompe y critica</em></span></div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <div id="fxLayer" class="fx-layer" aria-hidden="true"></div>
+
+  <section id="intro" class="overlay active">
+    <div class="intro-rift" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="intro-card">
+      <div class="trio" aria-hidden="true"><i class="k"></i><i class="l"></i><i class="n"></i></div>
+      <p>TACTICAL ROGUELIKE • MATCH COMBAT</p>
+      <h1>RIFT<span>WEAVE</span></h1>
+      <h2>SHARDS OF AETHER</h2>
+      <strong>Teje sigilos. Ordena a tu escuadrón. Rompe las reglas del tablero.</strong>
+      <div class="intro-stats"><span><b>3</b>HÉROES EN CAMPO</span><span><b>∞</b>BUILDS EMERGENTES</span><span><b>0</b>PAY TO WIN</span></div>
+      <button id="start" class="primary" type="button">INICIAR EXPEDICIÓN <b>→</b></button>
+      <button id="codexOpen" class="secondary" type="button">EXPLORAR ESCUADRÓN</button>
+      <small>PLAYABLE ALPHA • BUILD 0.3.0</small>
+    </div>
+  </section>
+
+  <section id="relicModal" class="overlay">
+    <div class="modal">
+      <p>FRACTURA SUPERADA</p><h2>Elige una anomalía</h2><span>Las reliquias cambian reglas y sinergias de la run.</span>
+      <div id="relicChoices" class="relic-choices"></div>
+    </div>
+  </section>
+
+  <section id="pauseModal" class="overlay">
+    <div class="modal compact">
+      <p>SUSPENSIÓN TÁCTICA</p><h2>Rift en pausa</h2>
+      <div class="pause-stats"><span>SALA<b id="pRoom">1</b></span><span>ÉTER<b id="pAether">0</b></span><span>MEJOR CADENA<b id="pChain">0</b></span></div>
+      <button id="resume" class="primary" type="button">CONTINUAR</button>
+      <button id="settingsOpen" class="secondary" type="button">AJUSTES</button>
+      <button id="abandon" class="danger" type="button">ABANDONAR RUN</button>
+    </div>
+  </section>
+
+  <section id="settingsModal" class="overlay">
+    <div class="modal compact settings">
+      <div class="modal-head"><div><p>SISTEMA</p><h2>Ajustes</h2></div><button id="settingsClose" class="round" type="button">×</button></div>
+      <label><span><b>Audio reactivo</b><small>Síntesis procedural en tiempo real</small></span><input id="audioToggle" type="checkbox" checked></label>
+      <label><span><b>Partículas</b><small>Impactos, chispas y recompensas</small></span><input id="particleToggle" type="checkbox" checked></label>
+      <label><span><b>Reducir movimiento</b><small>Desactiva sacudidas y grandes desplazamientos</small></span><input id="motionToggle" type="checkbox"></label>
+    </div>
+  </section>
+
+  <section id="codexModal" class="overlay">
+    <div class="modal codex">
+      <div class="modal-head"><div><p>ESCUADRÓN</p><h2>Los Tejedores</h2></div><button id="codexClose" class="round" type="button">×</button></div>
+      <article><i class="portrait k"></i><div><b>KAEL VOSS</b><small>Vanguardia del Umbral</small><p>Convierte Acero en impactos encadenados y perfora escudos.</p></div></article>
+      <article><i class="portrait l"></i><div><b>LYRA SOL</b><small>Tejedora de Ceniza</small><p>Transforma Brasa en daño explosivo y supersaturación ofensiva.</p></div></article>
+      <article><i class="portrait n"></i><div><b>NYX VALE</b><small>Guardiana Astral</small><p>Convierte Marea y Brote en barreras, curación y contraataques.</p></div></article>
+    </div>
+  </section>
+
+  <section id="defeatModal" class="overlay">
+    <div class="modal compact"><p>EL RIFT TE RECLAMA</p><h2>Expedición terminada</h2><span id="defeatText"></span><button id="retry" class="primary" type="button">VOLVER A TEJER</button></div>
+  </section>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
