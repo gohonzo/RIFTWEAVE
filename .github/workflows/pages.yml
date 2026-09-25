@@ -38,7 +38,25 @@ jobs:
           cp site-src/style.css site/style.css
           cp site-src/game.js site/game.js
 
-          # Clean sprite-sheet contamination left in the previously generated crops.
+          # Decode the clean transparent hero art supplied by the user.
+          base64 -d clean-assets/kael_clean.webp.b64 > site/assets/kael_clean.webp
+          base64 -d clean-assets/lyra_clean.webp.b64 > site/assets/lyra_clean.webp
+          base64 -d clean-assets/nyx_clean.webp.b64 > site/assets/nyx_clean.webp
+          if [ -f clean-assets/umbra_clean.webp.b64 ]; then
+            base64 -d clean-assets/umbra_clean.webp.b64 > site/assets/umbra_clean.webp
+          fi
+
+          # Use the clean isolated artwork for every hero pose; motion/VFX are handled in CSS/JS.
+          for pose in idle attack cast hurt; do
+            cp site/assets/kael_clean.webp "site/assets/kael_${pose}.webp"
+            cp site/assets/lyra_clean.webp "site/assets/lyra_${pose}.webp"
+            cp site/assets/nyx_clean.webp "site/assets/nyx_${pose}.webp"
+          done
+          if [ -f site/assets/umbra_clean.webp ]; then
+            for pose in idle attack hurt; do cp site/assets/umbra_clean.webp "site/assets/umbra_${pose}.webp"; done
+          fi
+
+          # Legacy crop cleanup (clean supplied art above overrides hero/umbra files).
           # Keep this non-fatal on runners without ffmpeg.
           if command -v ffmpeg >/dev/null 2>&1; then
             clean_crop() {
@@ -46,14 +64,14 @@ jobs:
               ffmpeg -hide_banner -loglevel error -y -i "$src" -vf "$filter" -c:v libwebp -quality 92 -compression_level 4 "$tmp" &&
               mv "$tmp" "$src"
             }
-            clean_crop site/assets/kael_idle.webp  "crop=iw*0.84:ih:0:0"
-            clean_crop site/assets/kael_hurt.webp  "crop=iw*0.82:ih:iw*0.18:0"
-            clean_crop site/assets/lyra_idle.webp  "crop=iw*0.82:ih:0:0"
-            clean_crop site/assets/lyra_hurt.webp  "crop=iw*0.78:ih:iw*0.22:0"
-            clean_crop site/assets/nyx_idle.webp   "crop=iw*0.82:ih:0:0"
-            clean_crop site/assets/nyx_cast.webp   "crop=iw*0.82:ih:0:0"
-            clean_crop site/assets/nyx_hurt.webp   "crop=iw*0.80:ih:iw*0.20:0"
-            clean_crop site/assets/umbra_hurt.webp "crop=iw*0.82:ih:iw*0.18:0"
+            true # clean Kael supplied by user
+            true
+            true
+            true
+            true
+            true
+            true
+            true
             clean_crop site/assets/glass_hurt.webp "crop=iw*0.88:ih:iw*0.12:0"
             clean_crop site/assets/boss_enraged.webp "crop=iw:ih*0.94:0:ih*0.06"
           fi
