@@ -38,6 +38,26 @@ jobs:
           cp site-src/style.css site/style.css
           cp site-src/game.js site/game.js
 
+          # Clean sprite-sheet contamination left in the previously generated crops.
+          # Keep this non-fatal on runners without ffmpeg.
+          if command -v ffmpeg >/dev/null 2>&1; then
+            clean_crop() {
+              src="$1"; filter="$2"; tmp="$1.tmp.webp"
+              ffmpeg -hide_banner -loglevel error -y -i "$src" -vf "$filter" -c:v libwebp -quality 92 -compression_level 4 "$tmp" &&
+              mv "$tmp" "$src"
+            }
+            clean_crop site/assets/kael_idle.webp  "crop=iw*0.84:ih:0:0"
+            clean_crop site/assets/kael_hurt.webp  "crop=iw*0.82:ih:iw*0.18:0"
+            clean_crop site/assets/lyra_idle.webp  "crop=iw*0.82:ih:0:0"
+            clean_crop site/assets/lyra_hurt.webp  "crop=iw*0.78:ih:iw*0.22:0"
+            clean_crop site/assets/nyx_idle.webp   "crop=iw*0.82:ih:0:0"
+            clean_crop site/assets/nyx_cast.webp   "crop=iw*0.82:ih:0:0"
+            clean_crop site/assets/nyx_hurt.webp   "crop=iw*0.80:ih:iw*0.20:0"
+            clean_crop site/assets/umbra_hurt.webp "crop=iw*0.82:ih:iw*0.18:0"
+            clean_crop site/assets/glass_hurt.webp "crop=iw*0.88:ih:iw*0.12:0"
+            clean_crop site/assets/boss_enraged.webp "crop=iw:ih*0.94:0:ih*0.06"
+          fi
+
           test -f site/index.html
           test -f site/style.css
           test -f site/game.js
