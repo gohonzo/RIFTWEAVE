@@ -22,15 +22,15 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
       - name: Restore latest local Codex source
         run: |
           base64 -d latest-src.bundle.b64 > /tmp/rift-latest-src.tar.gz
           echo "89feb4cc8e3d02f87694d815f184cfbad30a7881f5395d5f9e4dab962e731ccc  /tmp/rift-latest-src.tar.gz" | sha256sum -c -
           tar -xzf /tmp/rift-latest-src.tar.gz -C .
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
       - run: npm ci
       - run: npm run build
       - run: npm test
