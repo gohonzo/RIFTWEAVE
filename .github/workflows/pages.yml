@@ -1,4 +1,4 @@
-name: Deploy RIFTWEAVE Senior Visual Build
+name: Deploy RIFTWEAVE Professional Build
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -24,18 +24,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Rebuild production game
+      - name: Rebuild production bundle
         run: |
           mkdir -p site
           cat .bundle/part_*.b64 > site.b64
           base64 -d site.b64 > site.tar.gz
-          echo "a5650c03fde65213cad35e4ade56c0a543cc0642a96ac1f49867cf7935e252b4  site.tar.gz" | sha256sum -c -
+          echo "48b3c4f32f589723f6d7627fd2835c2f981ef5fb0f4314f8f7e22428bfe865d5  site.tar.gz" | sha256sum -c -
           tar -xzf site.tar.gz -C site
           test -f site/index.html
           test -f site/style.css
           test -f site/game.js
           test -f site/assets/kael_idle.webp
-          test -f site/assets/tile_void_plus.webp
+          test -f site/assets/tile_steel.webp
+          test -f site/assets/boss_idle.webp
           node --check site/game.js
 
       - name: Configure Pages
