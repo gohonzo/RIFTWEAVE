@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -26,17 +26,27 @@ jobs:
 
       - name: Rebuild production bundle
         run: |
+          rm -rf site
           mkdir -p site
           cat .bundle/part_*.b64 > site.b64
           base64 -d site.b64 > site.tar.gz
           echo "48b3c4f32f589723f6d7627fd2835c2f981ef5fb0f4314f8f7e22428bfe865d5  site.tar.gz" | sha256sum -c -
           tar -xzf site.tar.gz -C site
+
+          # Overlay the corrected production shell without duplicating binary assets.
+          cp site-src/index.html site/index.html
+          cp site-src/style.css site/style.css
+          cp site-src/game.js site/game.js
+
           test -f site/index.html
           test -f site/style.css
           test -f site/game.js
           test -f site/assets/kael_idle.webp
           test -f site/assets/tile_steel.webp
           test -f site/assets/boss_idle.webp
+          grep -q "menu-art" site/index.html
+          grep -q "SENIOR VISUAL / RESPONSIVE REBUILD" site/style.css
+          grep -q "document.body.dataset.screen='home'" site/game.js
           node --check site/game.js
 
       - name: Configure Pages
