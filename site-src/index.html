@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#070915">
+<title>RIFTWEAVE: Shards of Aether</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <header class="topbar">
+    <button class="brand" data-screen="home"><span class="brand-gem"></span><span><b>RIFTWEAVE</b><small>SHARDS OF AETHER</small></span></button>
+    <div class="top-stats">
+      <span><small>RIFT</small><b id="hudRoom">01</b></span>
+      <span><small>ÉTER</small><b id="hudAether">0</b></span>
+      <span><small>FRAGMENTOS</small><b id="hudShards">0</b></span>
+      <span><small>RELIQUIAS</small><b id="hudRelics">0</b></span>
+    </div>
+    <div class="top-actions">
+      <button id="fitBtn" title="Ajustar a pantalla">↙↗</button>
+      <button id="fullscreenBtn" title="Pantalla completa">⛶</button>
+      <button id="pauseBtn" class="game-only" title="Pausa">Ⅱ</button>
+    </div>
+  </header>
+
+  <main class="screen-wrap">
+    <section id="home" class="screen active home-screen">
+      <div class="home-bg"></div><div class="home-vignette"></div>
+      <div class="home-copy">
+        <div class="eyebrow">TACTICAL ROGUELIKE · MATCH COMBAT</div>
+        <h1>RIFT<span>WEAVE</span></h1><h2>SHARDS OF AETHER</h2>
+        <p>Teje reliquias, coordina a tu escuadrón y rompe las reglas del Rift en cada jornada.</p>
+        <button id="continueBtn" class="hero-btn primary hidden"><span><b>CONTINUAR</b><small id="continueMeta">RIFT 01 · TURNO 1</small></span><strong>▶</strong></button>
+        <button id="newRunBtn" class="hero-btn accent"><span><b>NUEVA JORNADA</b><small>NUEVA RUN · BUILD TÁCTICA</small></span><strong>✦</strong></button>
+        <div class="home-menu">
+          <button data-screen="heroes"><span class="menu-art"><img src="assets/kael_idle.webp" alt=""></span><span><b>HÉROES</b><small>Escuadrón, supremas y maestrías</small></span></button>
+          <button data-screen="relics"><span class="menu-art relic-art"><img src="assets/tile_aether_special.webp" alt=""></span><span><b>RELIQUIAS</b><small>Sinergias descubiertas</small></span></button>
+          <button data-screen="codex"><span class="menu-art enemy-art-mini"><img src="assets/boss_idle.webp" alt=""></span><span><b>CÓDICE</b><small>Enemigos, bosses y reglas</small></span></button>
+          <button data-screen="achievements"><span class="menu-art"><img src="assets/tile_bloom_special.webp" alt=""></span><span><b>LOGROS</b><small>Retos y progreso permanente</small></span></button>
+          <button data-screen="settings"><span class="menu-art"><img src="assets/tile_steel_special.webp" alt=""></span><span><b>AJUSTES</b><small>Vídeo, audio y accesibilidad</small></span></button>
+        </div>
+      </div>
+      <div class="home-lineup">
+        <img src="assets/lyra_idle.webp" alt="Lyra Sol" class="lineup lyra-line">
+        <img src="assets/kael_idle.webp" alt="Kael Voss" class="lineup kael-line">
+        <img src="assets/nyx_idle.webp" alt="Nyx Vale" class="lineup nyx-line">
+      </div>
+      <div class="home-meta"><span>MEJOR RIFT <b id="bestRoom">1</b></span><span>RUNS <b id="runsCount">0</b></span><span>FRAGMENTOS <b id="metaShards">0</b></span></div>
+    </section>
+
+    <section id="game" class="screen game-screen">
+      <div class="battlefield panel">
+        <div class="battle-bg"></div><div class="rift-light"></div>
+        <div class="party">
+          <article class="unit" data-hero="kael">
+            <div class="sprite-wrap"><img id="kaelSprite" src="assets/kael_idle.webp" alt="Kael Voss"></div>
+            <div class="unit-card"><div><b>KAEL VOSS</b><small>VANGUARDIA</small></div><div class="bars"><i class="hp"><em id="kaelHp"></em></i><i class="energy"><em id="kaelEnergy"></em></i></div></div>
+          </article>
+          <article class="unit" data-hero="lyra">
+            <div class="sprite-wrap"><img id="lyraSprite" src="assets/lyra_idle.webp" alt="Lyra Sol"></div>
+            <div class="unit-card"><div><b>LYRA SOL</b><small>TEJEDORA</small></div><div class="bars"><i class="hp"><em id="lyraHp"></em></i><i class="energy"><em id="lyraEnergy"></em></i></div></div>
+          </article>
+          <article class="unit" data-hero="nyx">
+            <div class="sprite-wrap"><img id="nyxSprite" src="assets/nyx_idle.webp" alt="Nyx Vale"></div>
+            <div class="unit-card"><div><b>NYX VALE</b><small>GUARDIANA</small></div><div class="bars"><i class="hp"><em id="nyxHp"></em></i><i class="energy"><em id="nyxEnergy"></em></i></div></div>
+          </article>
+        </div>
+        <div class="enemy-zone">
+          <div id="enemyIntent" class="intent">PREPARANDO ATAQUE</div>
+          <div class="enemy-art"><div class="orbit o1"></div><div class="orbit o2"></div><img id="enemySprite" src="assets/umbra_idle.webp" alt="Enemigo"></div>
+          <div class="enemy-card"><div><b id="enemyName">DEVORADOR DE UMBRA</b><small id="enemyTier">RIFT BEAST</small></div><div class="enemy-hp"><i id="enemyHp"></i><em id="enemyShield"></em></div><footer><span id="enemyHpText">300 / 300</span><span id="enemyCountdown">ATACA EN 3</span></footer></div>
+        </div>
+      </div>
+
+      <div class="play-grid">
+        <aside class="left-rail panel">
+          <div class="rail-block sync"><header><small>SINCRONÍA</small><b id="comboText">x1.00</b></header><div class="syncbar"><i id="syncBar"></i></div><span id="chainText">CADENA —</span></div>
+          <div class="rail-block objective"><small>OBJETIVO</small><b id="objectiveText">Rompe la defensa del Rift.</b><div class="objective-bar"><i id="objectiveBar"></i></div></div>
+          <div class="rail-block"><small>PRÓXIMO EVENTO</small><p id="forecastText">El enemigo atacará en 3 turnos.</p></div>
+          <div class="rail-block"><small>RELIQUIAS DE RUN</small><div id="runRelics" class="run-relics"></div></div>
+        </aside>
+
+        <section class="board-panel panel">
+          <header class="board-head"><div><small>TEJIDO ACTIVO</small><b id="turnLabel">TURNO 1</b></div><div class="center-state" id="centerState">LISTO</div><div><small>ESCUDO</small><b id="partyShield">0</b></div></header>
+          <div class="board-wrap"><div id="board" class="board"></div><svg id="linkFx" class="linkfx" viewBox="0 0 700 700" preserveAspectRatio="none"></svg><div id="boardFlash" class="board-flash"></div></div>
+          <footer id="boardHint">Intercambia dos fichas adyacentes. Combina 4+ para crear reliquias potenciadas.</footer>
+        </section>
+
+        <aside class="right-rail panel"><small>REGLAS DEL RIFT</small>
+          <div class="rule"><img src="assets/tile_steel.webp"><span><b>ACERO</b><em>Kael encadena impactos</em></span></div>
+          <div class="rule"><img src="assets/tile_ember.webp"><span><b>BRASA</b><em>Lyra acumula ignición</em></span></div>
+          <div class="rule"><img src="assets/tile_tide.webp"><span><b>MAREA</b><em>Nyx genera barrera</em></span></div>
+          <div class="rule"><img src="assets/tile_aether.webp"><span><b>ÉTER</b><em>Carga las supremas</em></span></div>
+          <div class="rule"><img src="assets/tile_bloom.webp"><span><b>BROTE</b><em>Restaura al escuadrón</em></span></div>
+          <div class="rule"><img src="assets/tile_void.webp"><span><b>VACÍO</b><em>Ruptura y críticos</em></span></div>
+        </aside>
+      </div>
+
+      <div class="ability-bar panel">
+        <button class="ability" data-skill="kael"><img src="assets/kael_cast.webp"><span><b>FRACTURA VECTORIAL</b><small>Q · Ignora escudo</small></span><i id="kaelUlt">0%</i></button>
+        <button class="ability" data-skill="lyra"><img src="assets/lyra_cast.webp"><span><b>SUPERNOVA DE CENIZA</b><small>W · Daño explosivo</small></span><i id="lyraUlt">0%</i></button>
+        <button class="ability" data-skill="nyx"><img src="assets/nyx_cast.webp"><span><b>MANTO DE AURORA</b><small>E · Cura y barrera</small></span><i id="nyxUlt">0%</i></button>
+      </div>
+    </section>
+
+    <section id="heroes" class="screen info-screen"><header class="info-head"><button data-screen="home">← VOLVER</button><div><small>ESCUADRÓN</small><h2>Héroes y maestrías</h2></div></header><div id="heroCards" class="hero-cards"></div></section>
+    <section id="relics" class="screen info-screen"><header class="info-head"><button data-screen="home">← VOLVER</button><div><small>COLECCIÓN</small><h2>Reliquias descubiertas</h2></div></header><div id="relicCollection" class="collection-grid"></div></section>
+    <section id="codex" class="screen info-screen"><header class="info-head"><button data-screen="home">← VOLVER</button><div><small>CÓDICE DEL RIFT</small><h2>Enemigos, bosses y reglas</h2></div></header><div id="codexGrid" class="codex-grid"></div></section>
+    <section id="achievements" class="screen info-screen"><header class="info-head"><button data-screen="home">← VOLVER</button><div><small>PROGRESO</small><h2>Logros y desafíos</h2></div></header><div id="achievementGrid" class="collection-grid"></div></section>
+    <section id="settings" class="screen info-screen"><header class="info-head"><button data-screen="home">← VOLVER</button><div><small>SISTEMA</small><h2>Ajustes</h2></div></header><div class="settings-grid">
+      <section class="settings-card panel"><h3>VÍDEO</h3><label><span><b>Partículas</b><small>Impactos, chispas y cadenas</small></span><input id="optParticles" type="checkbox" checked></label><label><span><b>Camera shake</b><small>Impactos y bosses</small></span><input id="optShake" type="checkbox" checked></label><label><span><b>Movimiento reducido</b><small>Reduce flashes y desplazamientos</small></span><input id="optMotion" type="checkbox"></label><label><span><b>Calidad</b><small>Complejidad de efectos</small></span><select id="optQuality"><option>Alta</option><option>Media</option><option>Baja</option></select></label></section>
+      <section class="settings-card panel"><h3>AUDIO</h3><label><span><b>Audio reactivo</b><small>Síntesis procedural</small></span><input id="optAudio" type="checkbox" checked></label><label><span><b>Volumen maestro</b><small>Mezcla general</small></span><input id="optVolume" type="range" min="0" max="100" value="70"></label><label><span><b>Haptics</b><small>Vibración compatible</small></span><input id="optHaptics" type="checkbox" checked></label></section>
+      <section class="settings-card panel"><h3>INTERFAZ Y ACCESIBILIDAD</h3><label><span><b>Alto contraste</b><small>Refuerza bordes y texto</small></span><input id="optContrast" type="checkbox"></label><label><span><b>Números grandes</b><small>Daño y curación ampliados</small></span><input id="optBigNumbers" type="checkbox"></label><button id="settingsFit">AJUSTAR A PANTALLA</button><button id="settingsFullscreen">PANTALLA COMPLETA</button><button id="resetSave" class="danger-btn">REINICIAR PROGRESO LOCAL</button></section>
+    </div></section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-screen="home">⌂<span>INICIO</span></button><button data-screen="heroes">♙<span>HÉROES</span></button><button data-screen="relics">✦<span>RELIQUIAS</span></button><button data-screen="codex">⌘<span>CÓDICE</span></button><button data-screen="achievements">★<span>LOGROS</span></button><button data-screen="settings">⚙<span>AJUSTES</span></button>
+  </nav>
+
+  <div id="pauseModal" class="modal-layer"><div class="modal"><small>RIFT SUSPENDIDO</small><h2>PAUSA</h2><div class="pause-stats"><span>SALA<b id="pauseRoom">1</b></span><span>ÉTER<b id="pauseAether">0</b></span><span>MEJOR CADENA<b id="pauseChain">0</b></span></div><button id="resumeBtn" class="modal-primary">CONTINUAR</button><button id="pauseSettings">AJUSTES</button><button id="pauseFit">AJUSTAR A PANTALLA</button><button id="abandonBtn" class="danger-btn">ABANDONAR RUN</button></div></div>
+  <div id="relicModal" class="modal-layer"><div class="modal wide"><small>FRACTURA ESTABILIZADA</small><h2>ELIGE UNA ANOMALÍA</h2><p>Las reliquias alteran las reglas de tu build y crean sinergias.</p><div id="relicChoices" class="relic-choices"></div></div></div>
+  <div id="defeatModal" class="modal-layer"><div class="modal"><small>EL RIFT TE RECLAMA</small><h2>EXPEDICIÓN TERMINADA</h2><p id="defeatSummary"></p><button id="retryBtn" class="modal-primary">VOLVER A TEJER</button><button id="defeatHome">MENÚ PRINCIPAL</button></div></div>
+  <div id="toast" class="toast"></div><div id="fx" class="fx-layer"></div><div id="transition" class="transition"></div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
